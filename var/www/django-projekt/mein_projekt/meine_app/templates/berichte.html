@@ -1,0 +1,90 @@
+{% load static %}									<!-- Django laedt statische Dateein wie CSS -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />		<!-- Sorgt fuer responsive Darstellung auf mobilen Geraeten -->
+<title>Neuer Bericht Zeitify</title>
+<link rel="stylesheet" href="{% static 'style.css' %}?v=16">
+</head>
+<body class="dashboard-body">
+<header class="app-header">
+<div class="app-header-left">
+<div class="app-header-title">Zeitify</div>
+<div class="app-header-subtitle">Neuer Arbeitsbericht</div>
+</div>
+<div class="app-header-right">
+Benutzer:
+<strong>{{ username|default:"Gast" }}</strong><br>					<!-- Gibt den Benutzernamen aus wenn nicht vorhanden ist Gast -->
+Rolle:
+<strong>
+{% if role == "simple" %}
+   Anwender
+{% elif role == "vip" %}
+   VIP
+{% elif role == "admin" %}
+   Administrator
+{% else %}
+   unbekannt
+{% endif %}
+</strong>
+<a href="{% url 'logout' %}">Logout</a>
+</div>
+</header>
+<div class="dashboard-layout">
+
+<nav class="sidebar">
+<a href="{% url 'uebersicht' %}">Dashboard</a>
+<a href="{% url 'berichte' %}" class="active">Neuer Bericht</a>
+<a href="{% url 'meine_berichte' %}">Meine Berichte</a>
+<a href="{% url 'einstellungen' %}">Einstellungen</a>
+	{% if role == "admin" %}
+<a href="{% url 'rollen_antraege' %}">Rollenantraege</a>
+<a href="{% url 'module_verwalten' %}">Module verwalten</a>
+<a href="{% url 'benutzer_verwalten' %}">Benutzer verwalten</a>
+	{% endif %}
+</nav>
+<main class="dashboard-main">								<!-- Hauptinhalt der Seite -->
+<h1>Neuer Arbeitsbericht</h1>
+<!-- kein Speichern, nur Weiterleiten -->
+<form class="bericht-form" method="post">						<!-- Formular wird per POST gesendet -->
+    {% csrf_token %}									<!-- Schutz vor CSRFAngriffen -->
+<label for="datum">Datum:</label>
+<input type="date"
+           id="datum"
+           name="datum"
+           value="{{ bericht.datum|default:'' }}"
+           required>									<!-- Datumsauswahl, beim Bearbeiten vorausgefuellt -->
+
+<label for="modul">Modul:</label>
+<select id="modul" name="modul" required>
+ 
+    {% for m in modules %}								<!-- Schleife ueber alle Module -->
+
+<option value="{{ m }}"
+ 
+            {% if bericht.modul == m %}selected{% endif %}>				<!-- Setzt das aktuelle Modul beim Bearbeiten auf "selected" -->
+ 
+            {{ m }}
+</option>
+ 
+    {% endfor %}
+</select>
+<label for="minuten">Arbeitszeit in Minuten:</label>
+<input type="number"
+           id="minuten"
+           name="minuten"
+           min="0"
+           value="{{ bericht.minuten|default:'' }}"
+           required>
+<label for="content">Beschreibung der Taetigkeit:</label>
+<textarea id="content" name="content">{{ bericht.content|default:'' }}</textarea>
+<button type="submit">
+        {% if edit %}Speichern{% else %}Absenden{% endif %}
+</button>
+</form>
+ 
+</main>
+</div>
+</body>
+</html>

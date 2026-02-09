@@ -1,0 +1,146 @@
+{% load static %}									<!-- Django erlaubt verwenden statischer Dateien wie CSS -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />		<!-- Sorgt fuer responsive Darstellung auf mobilen Geraeten -->
+<title>Einstellungen Zeitify</title>
+<link rel="stylesheet" href="{% static 'style.css' %}?v=80">
+</head>
+<body class="dashboard-body">
+<header class="app-header">
+<div class="app-header-left">
+<div class="app-header-title">Zeitify</div>
+<div class="app-header-subtitle">Einstellungen</div>
+</div>
+<div class="app-header-right">
+ 
+       Benutzer:
+<strong>{{ username|default:"Gast" }}</strong><br>					<!-- Gibt den Benutzernamen aus wenn keiner da Gast -->
+Rolle:
+<strong>
+{% if role == "simple" %}
+   Anwender
+{% elif role == "vip" %}
+   VIP
+{% elif role == "admin" %}
+   Administrator
+{% else %}
+   unbekannt
+{% endif %}
+</strong>										<!-- Django zeigt die Rolle abhaengig von der Variable "role" -->
+<a href="{% url 'logout' %}">Logout</a>
+</div>
+</header>
+<div class="dashboard-layout">
+
+<nav class="sidebar">
+<a href="{% url 'uebersicht' %}">Dashboard</a>
+<a href="{% url 'berichte' %}">Neuer Bericht</a>
+<a href="{% url 'meine_berichte' %}">Meine Berichte</a>
+<a href="{% url 'einstellungen' %}" class="active">Einstellungen</a>			<!-- Aktuelle Seite deshalb mit CSSklasse active -->
+    {% if role == "admin" %}								<!-- nur fuer Admins sichtbar -->
+<a href="{% url 'rollen_antraege' %}">Rollenantraege</a>
+<a href="{% url 'module_verwalten' %}">Module verwalten</a>
+<a href="{% url 'benutzer_verwalten' %}">Benutzer verwalten</a>
+ 
+    {% endif %}
+</nav>
+<main class="dashboard-main settings-main">
+<h1>Einstellungen</h1>
+
+<section class="settings-section">
+<h2>Aktuelle Rolle</h2>
+<div class="role-card">									<!-- Visuelle Box fuer die Rollenanzeige -->
+<span class="role-badge">
+ 
+            {% if role == "simple" %}
+                Anwender
+            {% elif role == "vip" %}
+                VIP Anwender
+            {% elif role == "admin" %}
+                Administrator
+            {% else %}
+                unbekannt
+            {% endif %}
+</span>
+<p class="muted">
+ 
+            Deine aktuelle Rolle bestimmt, welche Funktionen du im System nutzen kannst.
+</p>
+</div>
+</section>
+ 
+{% if role != "admin" %}
+<section class="settings-section">
+<h2>Rollenwechsel beantragen</h2>
+<div class="request-card">
+<form method="post">
+ 
+            {% csrf_token %}
+<label for="zielrolle">Gewuenschte Zielrolle</label>						<!-- Beschriftung des Auswahlfeldes -->
+<select id="zielrolle" name="zielrolle" required>						<!-- Auswahl fuer die Zielrolle -->
+						
+                {% if role == "simple" %}
+<option value="vip">VIP Anwender</option>
+ 
+                {% elif role == "vip" %}
+<option value="admin">Administrator</option>
+ 
+                {% endif %}
+</select>
+<label for="begruendung">Begruendung (optional)</label>						<!-- Beschriftung des Textfeldes -->
+<textarea
+ 
+                id="begruendung"
+ 
+                name="begruendung"
+ 
+                placeholder="Warum moechtest du die neue Rolle?"></textarea>
+<button type="submit" class="settings-submit">
+ 
+                Antrag absenden
+</button>
+</form>
+</div>
+</section>
+ 
+{% endif %}
+
+<section class="settings-section">
+<h2>Rollenuebersicht</h2>
+<div class="role-info-grid">									<!-- Grid-Layout fuer die Rolleninformationen -->
+<div class="role-info-card">
+<h3>Anwender</h3>
+<ul>
+<li>Arbeitsberichte erstellen</li>
+<li>Eigene Berichte anzeigen, bearbeiten und loeschen</li>
+<li>Arbeitszeituebersicht einsehen</li>
+<li>VIP-Rollenwechsel beantragen</li>
+</ul>
+</div>
+<div class="role-info-card">
+<h3>VIP Anwender</h3>
+<ul>
+<li>Alle Funktionen eines Anwenders</li>
+<li>Datenexport (CSV / JSON / XML)</li>
+<li>Datenimport</li>
+<li>Administrator-Rollenwechsel beantragen</li>
+</ul>
+</div>
+<div class="role-info-card">
+<h3>Administrator</h3>
+<ul>
+<li>Alle Funktionen eines VIP Anwenders</li>
+<li>Rollenantraege genehmigen oder ablehnen</li>
+<li>Benutzer verwalten und sperren</li>
+<li>Module verwalten</li>
+</ul>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body>
+</html>
+ 

@@ -1,0 +1,103 @@
+{% load static %}								<!-- Laedt die Django-Funktion fuer statische Dateien (CSS) -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />		<!-- Sorgt fuer responsive Darstellung auf mobilen Geraeten -->
+<title>Rollenantraege Zeitify</title>
+<link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body class="dashboard-body">
+
+<header class="app-header">
+<div class="app-header-left">
+<div class="app-header-title">Zeitify</div>
+<div class="app-header-subtitle">Rollenantraege verwalten</div>
+</div>
+<div class="app-header-right">
+
+Benutzer:
+<strong>{{ username|default:"Gast" }}</strong><br>				<!-- Rolle fett darstellen -->			
+Rolle:
+<strong>
+ {% if role == "simple" %}
+   Anwender
+ {% elif role == "vip" %}
+   VIP
+ {% elif role == "admin" %}
+   Administrator
+ {% else %}
+   unbekannt
+ {% endif %}
+</strong>
+<a href="{% url 'logout' %}">Logout</a>
+</div>
+</header>
+
+<div class="dashboard-layout">							<!-- Hauptlayout -->
+
+<nav class="sidebar">
+<a href="{% url 'uebersicht' %}">Dashboard</a>
+<a href="{% url 'berichte' %}">Neuer Bericht</a>
+<a href="{% url 'meine_berichte' %}">Meine Berichte</a>
+<a href="{% url 'einstellungen' %}">Einstellungen</a>
+<a href="{% url 'rollen_antraege' %}" class="active">Rollenantraege</a>
+<a href="{% url 'module_verwalten' %}">Module verwalten</a>
+<a href="{% url 'benutzer_verwalten' %}">Benutzer verwalten</a>
+</nav>
+
+<main class="dashboard-main">
+<h1>Rollenantraege</h1>
+ {% if messages %}								<!-- Django prueft, ob es Nachrichten gibt (messages framework) -->
+     {% for m in messages %}							<!-- Schleife jede Nachricht einzeln -->
+<p class="status blocked">{{ m }}</p>						<!-- Nachricht anzeigen (CSS-Klasse fuer Farbe/Style) -->
+     {% endfor %}								<!-- Ende messages Schleife -->
+   {% endif %}									<!-- Ende messages Abfrage -->
+
+    {% if role_requests %}							<!-- Wenn es Rollenwechsel-Antraege gibt -->
+
+<table class="requests-table">
+<thead>
+<tr>
+<th>Benutzer</th>
+<th>E-Mail</th>
+<th>Rolle bisher</th>
+<th>Beantragte Rolle</th>
+<th>Begruendung</th>
+<th>Aktion</th>
+</tr>
+</thead>
+<tbody>
+
+          {% for antrag in role_requests %}					<!-- Schleife ueber alle Antraege -->
+<tr>
+<td>{{ antrag.username }}</td>
+<td>{{ antrag.email }}</td>
+<td>{{ antrag.current_role }}</td>						<!-- aktuelle Rolle -->
+<td>{{ antrag.requested_role }}</td>
+<td>{{ antrag.reason|default:"-" }}</td>					<!-- Begruendung, wenn leer dann "-" -->
+<td>
+<a href="{% url 'rolle_genehmigen' antrag.id %}" class="btn-success">
+
+                  Genehmigen
+</a>
+<a href="{% url 'rolle_ablehnen' antrag.id %}" class="btn-danger">
+
+                  Ablehnen
+</a>
+</td>
+</tr>
+
+          {% endfor %}
+</tbody>
+</table>
+
+    {% else %}
+<p>Es liegen aktuell keine Rollenwechsel Antraege vor.</p>
+
+    {% endif %}
+</main>
+</div>
+</body>
+</html>
+ 

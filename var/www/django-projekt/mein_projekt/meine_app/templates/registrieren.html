@@ -1,0 +1,103 @@
+{% load static %}						<!-- Django Einbinden von statischen Dateien (CSS) -->		
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />		<!-- Sorgt fuer responsive Darstellung auf mobilen Geraeten -->
+<title>Module verwalten Zeitify</title>
+<link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body class="dashboard-body">
+<!-- HEADER -->
+<header class="app-header">
+<div class="app-header-left">
+<div class="app-header-title">Zeitify</div>
+<div class="app-header-subtitle">Module verwalten</div>
+</div>
+<div class="app-header-right">
+
+    Benutzer:
+<strong>{{ username|default:"Gast" }}</strong><br>		<!-- Zeigt den Benutzernamen an -->
+
+    Rolle:
+<strong>
+
+      {% if role == "simple" %}
+
+        Anwender
+
+      {% elif role == "vip" %}
+
+        VIP
+
+      {% elif role == "admin" %}
+
+        Administrator
+
+      {% else %}
+
+        unbekannt
+
+      {% endif %}
+</strong>							<!-- Django-If-Abfrage (Zeigt Text abhaengig von der Rolle) -->
+<a href="{% url 'logout' %}">Logout</a>
+</div>
+</header>
+
+<div class="dashboard-layout">
+
+<nav class="sidebar">
+<a href="{% url 'uebersicht' %}">Dashboard</a>
+<a href="{% url 'berichte' %}">Neuer Bericht</a>
+<a href="{% url 'meine_berichte' %}">Meine Berichte</a>
+<a href="{% url 'einstellungen' %}">Einstellungen</a>
+<a href="{% url 'rollen_antraege' %}">Rollenantraege</a>
+<a href="{% url 'module_verwalten' %}" class="active">Module verwalten</a>
+<a href="{% url 'benutzer_verwalten' %}">Benutzer verwalten</a>
+</nav>
+
+<main class="dashboard-main">					<!-- Hauptinhalt -->
+
+<h1>Erlaubte Module</h1>
+<!-- MODUL-TABELLE -->
+<table class="module-table">
+<thead>
+<tr>
+<th>Modul</th>
+<th>Aktion</th>
+</tr>
+</thead>
+<tbody>
+
+        {% for m in modules %}
+<tr>
+<td>{{ m }}</td>
+<td>
+<a href="{% url 'modul_loeschen' m %}" class="btn-danger">	<!-- Link zum Loeschen des Moduls m wird als Parameter an die URL uebergeben -->
+
+                Loeschen
+</a>
+</td>
+</tr>
+
+        {% empty %}
+<tr>
+<td colspan="2">Keine Module vorhanden</td>
+</tr>
+
+        {% endfor %}
+</tbody>
+</table>
+
+<h2>Neues Modul hinzufuegen</h2>
+<form method="post">
+
+      {% csrf_token %}
+<input type="text" name="modul" placeholder="Modulname" required>	<!-- Eingabefeld fuer den Modulnamen required = Pflichtfeld -->
+<button type="submit">Hinzufuegen</button>
+</form>
+</main>
+</div>
+</body>
+</html>
+ 

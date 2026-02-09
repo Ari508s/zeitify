@@ -1,0 +1,125 @@
+{% load static %}									<!-- Django laedt statische dateein wie CSS -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">			<!-- Sorgt fuer responsive Darstellung auf mobilen Geraeten -->
+
+<title>Benutzer verwalten Zeitify</title>
+<link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body class="dashboard-body">
+<header class="app-header">
+<div class="app-header-left">
+<div class="app-header-title">Zeitify</div>
+<div class="app-header-subtitle">Benutzer verwalten</div>
+</div>
+<div class="app-header-right">
+
+Benutzer:
+<strong>{{ username|default:"Gast" }}</strong><br>					<!-- Gibt den Benutzernamen aus wenn nicht vorhanden ist Gast -->
+
+Rolle:
+<strong>
+
+            {% if role == "simple" %}
+                Anwender
+            {% elif role == "vip" %}
+                VIP
+            {% elif role == "admin" %}
+                Administrator
+            {% else %}
+                unbekannt
+            {% endif %}
+</strong>
+<a href="{% url 'logout' %}">Logout</a>
+</div>
+</header>
+<div class="dashboard-layout">								
+<nav class="sidebar">						
+<a href="{% url 'uebersicht' %}">Dashboard</a>
+<a href="{% url 'berichte' %}">Neuer Bericht</a>
+<a href="{% url 'meine_berichte' %}">Meine Berichte</a>
+<a href="{% url 'einstellungen' %}">Einstellungen</a>
+<a href="{% url 'rollen_antraege' %}">Rollenantraege</a>
+<a href="{% url 'module_verwalten' %}">Module verwalten</a>
+<a href="{% url 'benutzer_verwalten' %}" class="active">
+Benutzer verwalten
+</a>
+</nav>
+
+<main class="dashboard-main">								<!-- Hauptinhalt der Seite -->
+<h1>Benutzeruebersicht</h1>
+
+    {% if messages %}									<!-- prueft ob Meldungen existieren -->								
+        {% for m in messages %}								<!-- Schelife fuer alle Meldungen -->
+
+<p style="color:#15803d; margin-bottom:12px;"
+                {{ m }}									<!-- Ausgabe der Meldung -->
+
+</p>
+        {% endfor %}									<!-- beendet for-Schelife -->
+
+    {% endif %}										<!-- beendet if-Schelife -->
+
+<table class="requests-table">								<!-- Tabelle mit Nutzeruebersicht -->
+<thead>
+<tr>
+<th>Benutzer</th>
+<th>E-Mail</th>
+<th>Rolle</th>
+<th>Rechte</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+
+{% for u in users %}									<!-- Schelife ueber alle Benutzer -->
+<tr>
+<td>{{ u.username }}</td>
+<td>{{ u.email }}</td>
+<td>
+
+                    {% if u.role == "simple" %}						<!-- Schelife ueber die Rolle der Nutzer -->
+                        Anwender
+                    {% elif u.role == "vip" %}
+                        VIP
+                    {% elif u.role == "admin" %}
+                        Administrator
+                    {% endif %}
+</td>
+<td>
+
+                    {% if u.role == "simple" %}						<!-- Schelife ueber die Rechte der Nutzer -->
+                        Berichte erstellen und verwalten
+                    {% elif u.role == "vip" %}
+                        Berichte erstellen, Import und Export
+                    {% elif u.role == "admin" %}
+                        Vollzugriff (Benutzer, Module, Rollen)
+                    {% endif %}
+</td>
+<td>
+
+                    {% if u.is_active %}
+                        Aktiv
+                        {% if u.email != request.session.email %}
+<a href="{% url 'benutzer_sperren' u.email %}" class="btn-danger">
+                                Sperren
+</a>											<!-- verhindert sich selbst zu sperren -->
+                        {% endif %}
+                    {% else %}
+                        Gesperrt
+<a href="{% url 'benutzer_entsperren' u.email %}" class="btn-success">
+                            Entsperren
+</a>
+                    {% endif %}
+</td>
+</tr>
+        {% endfor %}
+</tbody>
+</table>
+</main>
+</div>
+</body>
+</html>
+ 

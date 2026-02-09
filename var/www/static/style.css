@@ -1,0 +1,374 @@
+/* =========================================================
+   1) Standardseite Zeitify
+   ========================================================= */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }                                              /*nimmt allen Elementen Standardabstände weg*/
+ 
+body{
+  font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif;
+  background:#f6f7f8;
+  color:#111827;
+}
+ 
+/* =========================================================
+   2) LOGIN / REGISTRIEREN 
+   ========================================================= */
+
+.auth-body{
+  min-height:100vh;                                                                               /*Die Höhe des sichtbaren Browserfensters Element so groß wie der Bildschirm*/ 
+  display:flex;                                                                                   /*zum zentrieren*/
+  align-items:center;                                                                             /*vertikal (genau in der Mitte der Höhe)*/
+  justify-content:center;                                                                         /*horizontal (genau in der Mitte der Breite)*/
+}
+ 
+.registration-container{
+  width:100%;
+  display:flex;                                                                                   /*zum zentrieren*/
+  justify-content:center;                                                                         /*horizontal (genau in der Mitte der Breite)*/
+  padding:24px;                                                                                   /*innen Abstand*/
+}
+ 
+.registration-card{
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);                                                          /*Schatten unter der Karte(0 kein versatz links u rechts, 8 schatten nach unten 24 wie weichder Schatten ist*/ 
+  padding:36px 32px 30px;                                                                         /* oben, links/rechs, unten*/
+  max-width:400px;
+  width:100%;
+  text-align:center;                                                                              /*text wird zentriert*/
+}
+ 
+.app-title{ font-size:30px; font-weight:700; color:#0e6464; margin-bottom:4px; }
+.app-subtitle{ font-size:14px; color:#6b7280; margin-bottom:26px; }
+ 
+/* =========================================================
+   3) Inputs / Textarea
+   ========================================================= */
+
+form input,
+form select,
+form textarea{
+  width:100%;
+  padding:12px 14px;
+  margin-bottom:12px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+  background:#f9fafb;
+  font-size:15px;
+  outline:none;
+}
+ 
+form input:focus,                                                                                /*Eingabe Feld ist aktiv wenn der Benutzer hineingeklickt hat(Textfeld)*/                                                                          
+form select:focus,                                                                               /*Auswahl aktiv*/
+form textarea:focus{                                                                             /*Textbereich aktiv*/
+  border-color:#0e6464;
+  box-shadow:0 0 0 3px rgba(14,100,100,.25);                                                     /*Schatten unter der Karte*/
+  background:#fff;
+}
+ 
+/* =========================================================
+   4) BUTTONS Form und Farben
+   ========================================================= */
+
+/* Grundform für alle Button-Styles */
+form button, .dashboard-btn,
+.btn-edit, .btn-delete,
+.btn-success, .btn-danger,
+.settings-submit{
+  border:none;
+  border-radius:8px;
+  cursor:pointer;                                                                                /*zeigt an das es klickbar ist */
+  font-weight:600;                                                                               
+  text-decoration:none;                                                                          /*eigenes Design (bsp. text nicht mehr unterstrichen */
+  display:inline-block;                                                                          /*Inline Element mit Block Eigenschaft(nebeneinander u formbar) */
+}
+ 
+/* Standard (grün) */
+form button, .dashboard-btn, .settings-submit{
+  background:#0e6464;
+  color:#fff;
+  padding:12px;
+}
+ 
+form button:hover, .dashboard-btn:hover, .btn-edit:hover, .settings-submit:hover{
+  background:#0b5252;
+}
+ 
+/* Dashboard Button */
+.dashboard-btn{
+  width:auto;
+  text-align:center;
+ }
+
+/* Spezielle Aktionsbuttons */
+.btn-delete{
+  background:#e11d48;
+  color:#fff;
+  padding:12px;
+  border-radius:6px;
+}
+/* Gemeinsame Höhe für Bearbeiten & Löschen */
+.btn-edit,
+.btn-delete{
+  padding:10px 14px;
+  font-size:14px;
+  line-height:1.2;                                                                             /* Zeilenhöhe(wie viel Abstand zwischen Zeilen ist)*/
+  border-radius:8px;
+}
+ 
+/* Farben */
+.btn-edit{
+  background:#0e6464;
+  color:white;
+}
+ 
+.btn-delete{
+  background:#e11d48;
+  color:white;
+}
+
+.btn-delete:hover{ background:#be123c; }
+ 
+.btn-success{
+  background:#16a34a;
+  color:#fff;
+  padding:6px 12px;
+  border-radius:6px;
+}
+.btn-danger{
+  background:#dc2626;
+  color:#fff;
+  padding:6px 12px;
+  border-radius:6px;
+}
+.btn-success:hover, .btn-danger:hover{ opacity:.85; }                                           /*Deckkraft /Durchsichtigkeit*/         
+
+                
+ 
+/* =========================================================
+   5) KLEINE TEXTE (Login)
+   ========================================================= */
+
+.terms{
+  font-size:11px;
+  color:#6b7280;
+  margin-top:8px;
+  text-align:left;
+  line-height:1.4;
+}
+ 
+.already{
+  margin-top:16px;
+  color:#4b5563;
+  font-size:12.5px;
+}
+ 
+.already a{
+  color:#0e6464;
+  text-decoration:none;                                                                         /*eigenes Design keine Deko (bsp. text nicht mehr unterstrichen*/
+  font-weight:600;
+}
+.already a:hover{ text-decoration:underline; }                                                  /*unter Text wird Linie gezeichnet*/
+ 
+/* =========================================================
+   6) HEADER + SIDEBAR + LAYOUT
+   ========================================================= */
+.app-header{
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;                                                             /* solid = durchgezogene Linie, border-bottom setzt nur unten einen Rand*/
+  padding:12px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;                                                               /*wird nur bei display flex benutzt, erstes Element links letztes Element rechts (maximaler Abstand dazwischen)*/
+  position:sticky;                                                                             /*klebt fest sobald die Position erreicht wurde*/
+  top:0;
+  z-index:10;                                                                                  /*bestimmt welches Element oben liegt, wenn sich Elemente überlappen, funnktioniert nur mit position*/
+}
+ 
+.app-header-title{ font-size:20px; font-weight:700; color:#0e6464; }
+.app-header-subtitle{ font-size:13px; color:#6b7280; }
+.app-header-right{ font-size:13px; color:#4b5563; }
+ 
+.app-header-right a{
+  margin-left:10px;
+  color:#0e6464;
+  font-weight:600;
+  text-decoration:none;
+}
+.app-header-right a:hover{ text-decoration:underline; }
+ 
+.dashboard-layout{ display:flex; min-height:calc(100vh - 60px); }                                /*CSS rechnung: Bildschirmhöhe- Headerhöhe*/
+ 
+.sidebar{
+  background:#0e6464;
+  width:220px;
+  padding:20px 12px;
+  display:flex;
+  flex-direction:column;                                                                        /*Elemente werden untereinander angeordnet (wie Saeulen)*/
+}
+ 
+.sidebar a{
+  color:#fff;
+  text-decoration:none;
+  margin-bottom:10px;
+  font-size:15px;
+  font-weight:500;
+  padding:10px 12px;
+  border-radius:8px;
+}
+.sidebar a:hover,
+.sidebar a.active{ background:#0b5252; }
+ 
+.dashboard-main{ flex:1; padding:24px; overflow-y:auto; }                                      /*vertikales scrollen eingeschaltet falls nötig*/
+ 
+/* =========================================================
+   7) Seiten Dashboard, Berichte, 
+   ========================================================= */
+
+.dashboard-grid{
+  display:grid;                                                                                /*Element wird zu einem Raster aus Spalten und Zeilen*/
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));                                    /*Wie viele Spalten gibt es und wie breit sind sie, repeat = wiederhole das Spaltenmuster automatisch, auto-fit= Browser entscheidet selbst wie viele Spalten hineinpassen, min-max= spalte hat mindest und maximal Breite*/
+  gap:16px;                                                                                    /*Abstand zws grid Elementen*/
+  margin-bottom:24px;
+}
+ 
+.dashboard-card,
+.card, .role-card, .request-card, .settings-card,
+.bericht-form, .bericht-item{
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(15,23,42,.08);
+}
+ 
+.dashboard-card{ padding:16px 18px; }
+.dashboard-card-title{ font-size:14px; font-weight:600; color:#4b5563; margin-bottom:4px; }
+.dashboard-card-value{ font-size:22px; font-weight:700; }
+ 
+/* Berichte */
+.bericht-form{ padding:24px; max-width:450px; margin-top:20px; }
+.bericht-form label{ display:block; margin:12px 0 6px; font-weight:600; color:#374151; }
+.bericht-form textarea{ height:100px; resize:vertical; }
+.bericht-form button{ width:100%; margin-top:20px; }
+ 
+.berichte-liste{
+  margin-top:24px;
+  display:flex;
+  flex-direction:column;                                                                      /*Elemente werden untereinander angeordnet (wie Saeulen)*/
+  gap:16px;
+}
+ 
+.bericht-item{ padding:16px 20px; }
+.bericht-header{ display:flex; justify-content:space-between; font-weight:600; color:#0e6464; margin-bottom:8px; } /*wird nur bei display flex benutzt, erstes Element links letztes Element rechts (maximaler Abstand dazwischen)*/
+.bericht-content{ color:#374151; font-size:14px; margin-bottom:12px; }
+.bericht-actions{ display:flex; gap:10px; }
+ 
+/* =========================================================
+   8) TABELLEN Module, Rollen-Antraege, Nutzertabelle
+   ========================================================= */
+
+.module-table, .requests-table, .users-table, .simple-table{
+  width:100%;
+  border-collapse:collapse;                                                                      /*Tabellenraender werden zsm gelegt*/
+  background:#fff;
+}
+ 
+/* Modul-Tabelle */
+.module-table{
+  max-width:700px;
+  border-radius:12px;
+  overflow:hidden;                                                                               /*alles was über den Rand des Elemets hinaus geht wird versteckt*/
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+  margin-top:12px;
+}
+.module-table thead{ background:#f8fafc; }
+.module-table th, .module-table td{
+  padding:12px 14px;
+  text-align:left;
+  font-size:14px;
+}
+.module-table th{ font-weight:600; border-bottom:1px solid #e5e7eb; }
+.module-table td{ border-bottom:1px solid #f1f5f9; }
+.module-table tr:last-child td{ border-bottom:none; }
+ 
+/* Rollen-Anträge */
+.requests-table{
+  margin-top:25px;
+  border-radius:12px;
+  overflow:hidden;                                                                              /*alles was über den Rand des Elemets hinaus geht wird versteckt*/
+  font-size:15px;
+}
+.requests-table thead{ background:#f3f4f6; border-bottom:2px solid #e5e7eb; }
+.requests-table th{ padding:14px 12px; text-align:left; color:#374151; }
+.requests-table td{ padding:12px; border-bottom:1px solid #e5e7eb; }
+.requests-table tbody tr:hover{ background:#f9fafb; }
+ 
+/* Begründung-Spalte kürzen */
+.requests-table td:nth-child(5){
+  max-width:220px;
+  white-space:nowrap;                                                                           /*Text bleibt in einer einzigen Zeile text darf nicht in naechste Zeile umbrechen*/
+  overflow:hidden;
+  text-overflow:ellipsis;                                                                       /*am Ende des Textes werden 3(...) Punkte angezeigt*/
+}
+ 
+/* einfache Tabelle (z.B. Nutzer) */
+.simple-table th, .simple-table td{ border:1px solid #ddd; padding:10px; text-align:left; }
+.simple-table th{ background:#f3f4f6; font-weight:600; }
+ 
+.users-table th{
+  padding:12px;
+  font-size:14px;
+  color:#374151;
+  border-bottom:2px solid #e5e7eb;
+}
+.users-table td{ padding:12px; border-bottom:1px solid #e5e7eb; font-size:14px; }
+ 
+/* =========================================================
+   9) ROLLEN BADGES und STATUS
+   ========================================================= */
+.role-badge{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  color:#fff;
+}
+.role-simple{ background:#6b7280; }
+.role-vip{ background:#0e6464; }
+.role-admin{ background:#111827; }
+ 
+.status{ font-weight:600; }
+.status.active{ color:#15803d; }
+.status.blocked{ color:#b91c1c; }
+ 
+/* =========================================================
+   10) EINSTELLUNGEN 
+   ========================================================= */
+.settings-section{ padding-bottom:28px; }
+ 
+/* Aktuelle Rolle hervorheben (nur in Einstellungen) */
+.settings-section .role-badge{
+  color:#0e6464;
+  background:#d3d3d3;
+  padding:16px;
+}
+ 
+/* Rollenwechsel */
+.settings-section select,
+.settings-section textarea{
+  margin-bottom:20px;
+}
+ 
+/* Rollenübersicht-Karte */
+.role-info-card{ padding:18px; }
+ 
+/* =========================================================
+   11) Handy/Bildschirmansicht
+   ========================================================= */
+
+@media (max-width:768px){                                                                          /*CSS gilt nur für bestimmte Bedingungen: wenn der Bildschirm 768px breit oder schmaler ist*/
+  .dashboard-layout{ flex-direction:column; }
+  .sidebar{ flex-direction:row; width:100%; justify-content:space-around; }                        /*Elemente bekommen um sie herum gleichmaessigen Abstand*/
+  .sidebar a{ margin:6px 0; padding:8px; }
+  .dashboard-main{ padding:16px; }
+}

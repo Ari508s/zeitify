@@ -1,0 +1,109 @@
+{% load static %}									<!-- Django laedt statische Dateein wie CSS -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">			<!-- Sorgt fuer responsive Darstellung auf mobilen Geraeten -->
+<title>Meine Berichte Zeitify</title>
+<link rel="stylesheet" href="{% static 'style.css' %}?v=100">				
+</head>
+<body class="dashboard-body">
+<header class="app-header">
+<div class="app-header-left">
+<div class="app-header-title">Zeitify</div>
+<div class="app-header-subtitle">Meine Arbeitsberichte</div>
+</div>
+<div class="app-header-right">
+
+       Benutzer:
+<strong>{{ username|default:"Gast" }}</strong><br>					<!-- Gibt den Benutzernamen aus, falls leer Gast -->
+Rolle:
+<strong>
+ {% if role == "simple" %}
+   Anwender
+ {% elif role == "vip" %}
+   VIP
+ {% elif role == "admin" %}
+   Administrator
+ {% else %}
+   unbekannt
+ {% endif %}
+</strong>
+<a href="{% url 'logout' %}">Logout</a>							<!-- Link zum Logout -->
+</div>
+</header>
+<div class="dashboard-layout">
+<nav class="sidebar">									<!-- Navigationsleiste -->
+<a href="{% url 'uebersicht' %}">Dashboard</a>
+<a href="{% url 'berichte' %}">Neuer Bericht</a>
+<a href="{% url 'meine_berichte' %}" class="active">Meine Berichte</a>
+<a href="{% url 'einstellungen' %}">Einstellungen</a>
+
+    {% if role == "admin" %}
+<a href="{% url 'rollen_antraege' %}">Rollenantraege</a>
+<a href="{% url 'module_verwalten' %}">Module verwalten</a>
+<a href="{% url 'benutzer_verwalten' %}">Benutzer verwalten</a>
+
+    {% endif %}
+</nav>
+<main class="dashboard-main">
+<h1>Meine Arbeitsberichte</h1>
+<div class="berichte-liste">
+
+        {% for bericht in berichte %}							<!-- Schleife ueber alle Berichte aus der Datenbank -->
+<div class="bericht-item">								<!-- Einzelner Bericht -->
+<div class="bericht-header">
+<span>{{ bericht.datum }}</span>
+<span>{{ bericht.modul }}</span>
+</div>
+<div class="bericht-content">								<!-- Inhalt des Berichts -->
+
+                    {{ bericht.content }}
+</div>
+<div class="bericht-actions">
+<span>{{ bericht.minuten }} Minuten</span>
+<a href="{% url 'bericht_bearbeiten' bericht.id %}" class="btn-edit">			<!-- Link zum Bearbeiten des Berichts -->
+Bearbeiten
+</a>
+<a href="{% url 'bericht_loeschen' bericht.id %}"class="btn-delete">			<!-- Bericht loeschen -->		
+Loeschen
+</a>
+</div>
+</div>
+
+        {% empty %}									<!-- Wird angezeigt wenn keine Berichte gibt -->
+<p>Noch keine Berichte vorhanden.</p>
+
+        {% endfor %}									<!-- Ende der Schleife -->
+</div>
+
+    {% if role == "vip" or role == "admin" %}						<!-- Export und Import nur fuer VIP und Admin -->
+<!-- EXPORT -->
+<section style="margin-top:40px;">
+<h3>Daten exportieren</h3>
+<div style="display:flex; gap:10px; flex-wrap:wrap;">
+<a href="{% url 'export_json' %}" class="dashboard-btn">JSON</a>
+<a href="{% url 'export_csv' %}" class="dashboard-btn">CSV</a>
+<a href="{% url 'export_xml' %}" class="dashboard-btn">XML</a>				<!-- Links zum herunterladen in XML, CSV, JSON format -->
+</div>
+</section>
+<section style="margin-top:40px;">
+<h3>Daten importieren</h3>
+<form method="post"action="{% url 'import_berichte' %}"enctype="multipart/form-data">	<!-- Formular fuer Datei-Upload -->
+
+                {% csrf_token %}
+<input type="file" name="datei" accept=".json,.csv,.xml" required>			<!-- Dateiauswahl, Pflichtfeld -->
+			
+<button type="submit" class="dashboard-btn">
+
+Import starten
+
+</button>
+</form>
+</section>
+
+    {% endif %}
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+[
+  {
+    "username": "Aria",
+    "first_name": "Ariana",
+    "last_name": "Schramko",
+    "email": "ariana.schramko@gmail.com",
+    "password": "asdf123",
+    "role": "admin",
+    "is_active": true
+  },
+  {
+    "username": "test",
+    "first_name": "Ariana",
+    "last_name": "Schramko",
+    "email": "test@bla.de",
+    "password": "Hallo123",
+    "role": "simple",
+    "is_active": true
+  },
+  {
+    "username": "test",
+    "first_name": "AT",
+    "last_name": "TT",
+    "email": "test@bli.de",
+    "password": "asd123",
+    "role": "vip",
+    "is_active": true
+  },
+  {
+    "username": "cleo",
+    "first_name": "Cleo",
+    "last_name": "vom Berg",
+    "email": "cleo@gmail.com",
+    "password": "cleo",
+    "role": "simple",
+    "is_active": true
+  },
+  {
+    "username": "cleo.vomberg",
+    "first_name": "Cleo",
+    "last_name": "vom Berg",
+    "email": "cleo.vomberg@gmail.com",
+    "password": "Cleo",
+    "role": "simple",
+    "is_active": true
+  },
+  {
+    "username": "emelymayer05",
+    "first_name": "Emely",
+    "last_name": "Mayer",
+    "email": "emelymayer05@gmx.de",
+    "password": "asdf",
+    "role": "admin",
+    "is_active": true
+  },
+  {
+    "username": "mentos",
+    "first_name": "Mentos",
+    "last_name": "blau",
+    "email": "mentos@hi.com",
+    "password": "Mentos",
+    "role": "simple",
+    "is_active": true
+  },
+  {
+    "username": "juergen.vetter",
+    "first_name": "Jrgen",
+    "last_name": "Vetter",
+    "email": "juergen.vetter@outlook.de",
+    "password": "VetterJrgen",
+    "role": "vip",
+    "is_active": true
+  },
+  {
+    "username": "paw",
+    "first_name": "Paw",
+    "last_name": "PawPaw",
+    "email": "paw@hi.com",
+    "password": "PawPaw",
+    "role": "simple",
+    "is_active": true
+  },
+  {
+    "username": "was",
+    "first_name": "Max",
+    "last_name": "Musti",
+    "email": "was@gmx.de",
+    "password": "asdf",
+    "role": "simple",
+    "is_active": false
+  },
+  {
+    "username": "lolo",
+    "first_name": "lolo",
+    "last_name": "lolo",
+    "email": "lolo@lo.com",
+    "password": "lolo",
+    "role": "simple",
+    "is_active": true
+  }
+]
