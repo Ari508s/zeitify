@@ -5,12 +5,10 @@ from django.conf import settings								# settings -> Zugriff auf BASE_DIR (Proj
 from django.http import JsonResponse, HttpResponse						# HTTP = HTTPanfrageen(request), HTTPantworten(response)- JsonResponse= wandelt eine Pythondatei automatisch in eine Jsondatei umHttpResponse -> normale HTTP-Antwort (z. B. CSV, XML)
 
 from django.http import FileResponse								# FileResponse -> Datei als Download ausliefern (z. B. JSON Download)
-from pathlib import Path									# Path -> Dateipfade sicher bauen (funktioniert auf Linux/Windows)pathli= pythonmodul fuer datei pfade
+from pathlib import Path									# Path -> Dateipfade sicher bauen (funktioniert auf Linux/Windows)pathlib= pythonmodul fuer datei pfade
 
 import json											# json -> JSON lesen und schreiben
-import csv											# csv -> CSV schreiben und lesen							
-import xml.etree.ElementTree as ET								# ET -> XML erstellen und parsen
-import io											# io -> Bytes im Speicher als Datei behandeln (Download)
+											
 												
 
 
