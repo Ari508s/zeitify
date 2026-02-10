@@ -196,12 +196,6 @@ def registrieren(request):									# Wenn Formular abgeschickt wurde
     return render(request, "registrieren.html")							# Wenn GET: Seite anzeigen
     
 
-# =================== LOGOUT ==========================
-
-def logout_view(request):
-    request.session.flush()									# Session komplett leeren (Logout)
-    return redirect("login")
-
 # ================== Gemeinsame Daten  Header / Dashboard ===================
 
 def _ctx(request):										# Standard-Kontext fuer viele Seiten
