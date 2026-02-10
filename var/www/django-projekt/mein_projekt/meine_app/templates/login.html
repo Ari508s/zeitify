@@ -1,42 +1,67 @@
-{% load static %}								<!-- Django laedt statische Dateien wie CSS -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />	<!-- Sorgt fuer responsive Darstellung auf mobilen Geraeten -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Login Zeitify</title>
 <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
-<body class="auth-body">							<!-- Sichtbarer Bereich der Seite Klasse auth-body sorgt fuer zentriertes Login-Layout -->						
-<section class="registration-container">					<!-- Aeusserer Container, richtet die Login-Karte mittig aus -->
+<body class="auth-body">
+<section class="registration-container">
 <div class="registration-card">
 <div class="app-title">Zeitify</div>
 <div class="app-subtitle">Bitte melde dich an</div>
-<form method="post" action="{% url 'login' %}">					<!-- Formular method="post" = Daten werden sicher gesendet action verweist auf die Django-Login-URL -->
 
-      {% csrf_token %}								<!-- Sicherheits-Token von Django Schutz gegen CSRF-Angriffe -->
-<input
-        type="email"
-        name="email"
-        placeholder="E-Mail Adresse"
-        required>								<!-- Eingabefeld required = Pflichtfeld -->
-<input
-        type="password"
-        name="password"
-        placeholder="Passwort"
-        required>								<!-- Eingabefeld required = Pflichtfeld -->
 
-<select name="role" required>							<!-- Auswahlfeld mit Optionen required = Pflichtfeld -->
-<option value="" disabled selected>Rolle auswaehlen</option>			<!-- Plarthalter "Rolle auswaehlen" nicht auswaehlbar -->
-<option value="simple">Anwender</option>					<!-- Option mit value = Wert (hier simple = Anwender) -->
-<option value="vip">VIP Anwender</option>					<!-- Option mit value = Wert (hier vip = VIP) -->
-<option value="admin">Administrator</option>					<!-- Option mit value = Wert (hier admin = Administrator) -->
+      {% if messages %}
+<div class="auth-messages">
+
+          {% for message in messages %}
+<div class="auth-message {{ message.tags }}">
+
+              {{ message }}
+</div>
+
+          {% endfor %}
+</div>
+
+      {% endif %}
+<form method="post" action="{% url 'login' %}">
+
+        {% csrf_token %}
+<input
+
+          type="email"
+
+          name="email"
+
+          placeholder="E-Mail Adresse"
+
+          required
+>
+
+<input
+
+          type="password"
+
+          name="password"
+
+          placeholder="Passwort"
+
+          required
+>
+<select name="role" required>
+<option value="" disabled selected>Rolle auswaehlen</option>
+<option value="simple">Anwender</option>
+<option value="vip">VIP Anwender</option>
+<option value="admin">Administrator</option>
 </select>
-<button type="submit">Anmelden</button>						<!-- Absende-Button fuer das Formular -->
+<button type="submit">Anmelden</button>
 <p class="already">
 
-        Noch kein Konto?
-<a href="{% url 'registrieren' %}">Jetzt registrieren</a>			<!-- Link zu unserer registrieren Seite -->
+          Noch kein Konto?
+<a href="{% url 'registrieren' %}">Jetzt registrieren</a>
 </p>
 </form>
 </div>
