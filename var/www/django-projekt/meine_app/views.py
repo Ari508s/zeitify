@@ -10,9 +10,7 @@ MODULE_FILE = "/var/www/django-projekt/data/module.json"
 ROLE_REQUESTS_FILE = "/var/www/django-projekt/data/role_requests.json"
 
 
-# -------------------------
-# kleine Hilfen (nur Session)
-# -------------------------
+
 def ctx(request):
     return {
         "username": request.session.get("username"),
@@ -23,9 +21,9 @@ def ctx(request):
 def vip_or_admin(request):
     return request.session.get("role") in ["vip", "admin"]
 
-# =========================
-# EXPORT (mit Klasse)
-# =========================
+
+# EXPORT 
+
 
 class Exporter:
     def __init__(self, berichte):
@@ -119,9 +117,9 @@ def export_xml(request):
     return response
 
 
-# -------------------------
-# IMPORT (nur JSON)
-# -------------------------
+
+# IMPORT 
+
 def import_json(request):
     if not vip_or_admin(request):
         return redirect("uebersicht")
@@ -142,11 +140,11 @@ def import_json(request):
     except:
         reports = []
 
-    # alte Berichte vom User entfernen
+    
     reports = [r for r in reports if r.get("user") != email]
 
     try:
-        daten = json.load(datei)  # erwartet Liste
+        daten = json.load(datei)  
         for b in daten:
             reports.append({
                 "id": len(reports) + 1,
@@ -168,9 +166,9 @@ def import_json(request):
     return redirect("meine_berichte")
 
 
-# -------------------------
+
 # LOGIN
-# -------------------------
+
 
 def benutzer_login(request):
     if request.method == "POST":
@@ -223,9 +221,9 @@ def benutzer_login(request):
 
     return render(request, "login.html")
 
-# -------------------------
+
 # REGISTRIEREN
-# -------------------------
+
 def registrieren(request):
     if request.method == "POST":
         fname = (request.POST.get("vorname") or "").strip()
@@ -268,17 +266,17 @@ def registrieren(request):
     return render(request, "registrieren.html")
 
 
-# -------------------------
+
 # LOGOUT
-# -------------------------
+
 def logout_view(request):
     request.session.flush()
     return redirect("login")
 
 
-# -------------------------
-# ueBERSICHT / BERICHTE / MEINE BERICHTE
-# -------------------------
+
+# SEITEN
+
 def uebersicht(request):
     c = ctx(request)
 
@@ -295,7 +293,7 @@ def uebersicht(request):
     c["gesamt_minuten"] = gesamt_minuten
     c["gesamt_stunden"] = round(gesamt_minuten / 60, 2)
 
-    # Minuten pro Modul
+    # UeberSicht
     module_map = {}
     for r in eigene:
         m = r.get("modul", "Unbekannt")
@@ -387,11 +385,11 @@ def bericht_loeschen(request, bericht_id):
 
 
 
-# ======================
+
 # Bericht bearbeiten
-# ======================
+
 def bericht_bearbeiten(request, bericht_id):
-    # Reports laden
+    
     try:
         with open(REPORTS_FILE, "r", encoding="utf-8") as f:
             reports = json.load(f)
@@ -400,7 +398,7 @@ def bericht_bearbeiten(request, bericht_id):
 
     user_email = request.session.get("email")
 
-    # passenden Bericht suchen (nur eigener Bericht)
+    
     bericht = None
     for r in reports:
         if r.get("id") == bericht_id and r.get("user") == user_email:
@@ -410,7 +408,7 @@ def bericht_bearbeiten(request, bericht_id):
     if not bericht:
         return redirect("meine_berichte")
 
-    # Module laden fuer Dropdown
+   
     try:
         with open(MODULE_FILE, "r", encoding="utf-8") as f:
             modules = json.load(f)
@@ -437,13 +435,13 @@ def bericht_bearbeiten(request, bericht_id):
     })
 
 
-# ======================
-# Einstellungen (Rollenantrag)
-# ======================
+
+# Rollenantrag
+
 def einstellungen(request):
     c = ctx(request)
 
-    # Role-Requests laden
+    
     try:
         with open(ROLE_REQUESTS_FILE, "r", encoding="utf-8") as f:
             reqs = json.load(f)
@@ -472,9 +470,9 @@ def einstellungen(request):
     return render(request, "einstellungen.html", c)
 
 
-# ======================
-# Admin: Rollenantraege ansehen
-# ======================
+
+# Rollenantraege ansehen
+
 def rollen_antraege(request):
     role = request.session.get("role")
     if role != "admin":
@@ -494,21 +492,21 @@ def rollen_antraege(request):
     })
 
 
-# ======================
-# Admin: Rolle genehmigen
-# ======================
+
+# Rolle genehmigen
+
 def rolle_genehmigen(request, request_id):
     if request.session.get("role") != "admin":
         return redirect("uebersicht")
 
-    # role_requests laden
+    
     try:
         with open(ROLE_REQUESTS_FILE, "r", encoding="utf-8") as f:
             role_requests = json.load(f)
     except:
         role_requests = []
 
-    # users laden
+    
     try:
         with open(USERS_FILE, "r", encoding="utf-8") as f:
             users = json.load(f)
@@ -525,17 +523,17 @@ def rolle_genehmigen(request, request_id):
         messages.error(request, "Antrag nicht gefunden.")
         return redirect("rollen_antraege")
 
-    # user rolle Ã¤ndern
+    
     for u in users:
         if u.get("email", "").lower() == (req.get("email", "").lower()):
             u["role"] = req.get("requested_role")
             break
 
-    # speichern users
+    
     with open(USERS_FILE, "w", encoding="utf-8") as f:
         json.dump(users, f, ensure_ascii=False, indent=2)
 
-    # Antrag entfernen
+    
     role_requests = [r for r in role_requests if r.get("id") != request_id]
 
     with open(ROLE_REQUESTS_FILE, "w", encoding="utf-8") as f:
@@ -544,9 +542,7 @@ def rolle_genehmigen(request, request_id):
     return redirect("rollen_antraege")
 
 
-# ======================
-# Admin: Rolle ablehnen
-# ======================
+
 def rolle_ablehnen(request, request_id):
     if request.session.get("role") != "admin":
         return redirect("uebersicht")
@@ -565,9 +561,9 @@ def rolle_ablehnen(request, request_id):
     return redirect("rollen_antraege")
 
 
-# ======================
-# Admin: Module verwalten
-# ======================
+
+# Module verwalten
+
 def module_verwalten(request):
     if request.session.get("role") != "admin":
         return redirect("uebersicht")
@@ -611,9 +607,7 @@ def modul_loeschen(request, modul_name):
     return redirect("module_verwalten")
 
 
-# ======================
-# Admin: Benutzer verwalten / sperren
-# ======================
+
 def benutzer_verwalten(request):
     if request.session.get("role") != "admin":
         return redirect("uebersicht")
