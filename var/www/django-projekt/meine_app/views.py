@@ -22,149 +22,47 @@ def vip_or_admin(request):
     return request.session.get("role") in ["vip", "admin"]
 
 
-# EXPORT 
-
-
-class Exporter:
-    def __init__(self, berichte):
-        self.berichte = berichte
-
-    def als_json(self):
-        return json.dumps(self.berichte, ensure_ascii=False, indent=2)
-
-    def als_csv(self):
-        text = "Datum,Modul,Minuten,Beschreibung\n"
-        for r in self.berichte:
-            datum = str(r.get("datum", ""))
-            modul = str(r.get("modul", "")).replace(",", " ")
-            minuten = str(r.get("minuten", ""))
-            beschreibung = str(r.get("content", "")).replace(",", " ")
-            text += f"{datum},{modul},{minuten},{beschreibung}\n"
-        return text
-
-    def als_xml(self):
-        text = "<berichte>\n"
-        for r in self.berichte:
-            text += "  <bericht>\n"
-            text += "    <datum>" + str(r.get("datum", "")) + "</datum>\n"
-            text += "    <modul>" + str(r.get("modul", "")) + "</modul>\n"
-            text += "    <minuten>" + str(r.get("minuten", 0)) + "</minuten>\n"
-            text += "    <beschreibung>" + str(r.get("content", "")) + "</beschreibung>\n"
-            text += "  </bericht>\n"
-        text += "</berichte>"
-        return text
-
-def export_json(request):
-    if not vip_or_admin(request):
-        return redirect("uebersicht")
-
-    try:
-        with open(REPORTS_FILE, "r", encoding="utf-8") as f:
-            reports = json.load(f)
-    except:
-        reports = []
-
-    email = request.session.get("email")
-    eigene = [r for r in reports if r.get("user") == email]
-
-    exporter = Exporter(eigene)
-    data = exporter.als_json()
-
-    response = HttpResponse(data, content_type="application/json; charset=utf-8")
-    response["Content-Disposition"] = 'attachment; filename="berichte.json"'
-    return response
-
-
+# ================ CSV Export ==================
+ 
 def export_csv(request):
-    if not vip_or_admin(request):
-        return redirect("uebersicht")
-
-    try:
-        with open(REPORTS_FILE, "r", encoding="utf-8") as f:
-            reports = json.load(f)
-    except:
-        reports = []
-
-    email = request.session.get("email")
-    eigene = [r for r in reports if r.get("user") == email]
-
-    exporter = Exporter(eigene)
-    data = exporter.als_csv()
-
-    response = HttpResponse(data, content_type="text/csv; charset=utf-8")
-    response["Content-Disposition"] = 'attachment; filename="berichte.csv"'
-    return response
-
-
+   if not _check_vip_or_admin(request):
+       return redirect("uebersicht")
+   reports = _load_reports()
+   user_email = request.session.get("email")
+   eigene = [r for r in reports if r["user"] == user_email]
+   response = HttpResponse(content_type="text/csv")						# HTTP Antwort als CSV definieren
+   response["Content-Disposition"] = 'attachment; filename="berichte.csv"'			# Browser soll Download starten
+   writer = csv.writer(response)								# CSV-Writer erstellen
+   writer.writerow(["Datum", "Modul", "Minuten", "Beschreibung"])				# Kopfzeile schreiben
+   for r in eigene:
+       writer.writerow([
+           r.get("datum"),
+           r.get("modul"),
+           r.get("minuten"),
+           r.get("content")
+       ])
+   return response										# CSV Download zurueckgeben
+ 
+# =============== XML Export ==================
+ 
 def export_xml(request):
-    if not vip_or_admin(request):
-        return redirect("uebersicht")
-
-    try:
-        with open(REPORTS_FILE, "r", encoding="utf-8") as f:
-            reports = json.load(f)
-    except:
-        reports = []
-
-    email = request.session.get("email")
-    eigene = [r for r in reports if r.get("user") == email]
-
-    exporter = Exporter(eigene)
-    data = exporter.als_xml()
-
-    response = HttpResponse(data, content_type="application/xml; charset=utf-8")
-    response["Content-Disposition"] = 'attachment; filename="berichte.xml"'
-    return response
-
-
-
-# IMPORT 
-
-def import_json(request):
-    if not vip_or_admin(request):
-        return redirect("uebersicht")
-    if request.method != "POST":
-        return redirect("meine_berichte")
-
-    datei = request.FILES.get("datei")
-    if not datei or not datei.name.lower().endswith(".json"):
-        messages.error(request, "Bitte eine JSON-Datei auswÃ¤hlen.")
-        return redirect("meine_berichte")
-
-    email = request.session.get("email")
-    username = request.session.get("username")
-
-    try:
-        with open(REPORTS_FILE, "r", encoding="utf-8") as f:
-            reports = json.load(f)
-    except:
-        reports = []
-
-    
-    reports = [r for r in reports if r.get("user") != email]
-
-    try:
-        daten = json.load(datei)  
-        for b in daten:
-            reports.append({
-                "id": len(reports) + 1,
-                "user": email,
-                "username": username,
-                "datum": b.get("datum", ""),
-                "modul": b.get("modul", ""),
-                "minuten": int(b.get("minuten", 0)),
-                "content": b.get("content", ""),
-            })
-    except:
-        messages.error(request, "Import fehlgeschlagen.")
-        return redirect("meine_berichte")
-
-    with open(REPORTS_FILE, "w", encoding="utf-8") as f:
-        json.dump(reports, f, ensure_ascii=False, indent=2)
-
-    messages.success(request, "Import erfolgreich.")
-    return redirect("meine_berichte")
-
+   if not _check_vip_or_admin(request):
+       return redirect("uebersicht")
+   reports = _load_reports()
+   user_email = request.session.get("email")
+   eigene = [r for r in reports if r["user"] == user_email]
+   root = ET.Element("berichte")								# XML Root erstellen
+   for r in eigene:										# Jeden Bericht als XML-Knoten anhaengen
+       bericht = ET.SubElement(root, "bericht")
+       ET.SubElement(bericht, "datum").text = r.get("datum", "")
+       ET.SubElement(bericht, "modul").text = r.get("modul", "")
+       ET.SubElement(bericht, "minuten").text = str(r.get("minuten", 0))
+       ET.SubElement(bericht, "beschreibung").text = r.get("content", "")
+   xml_data = ET.tostring(root, encoding="utf-8")						# XML in Bytes umwandeln
+   response = HttpResponse(xml_data, content_type="application/xml")				# HTTP Antwort als XML senden
+   response["Content-Disposition"] = 'attachment; filename="berichte.xml"'			# Browser soll Download starten
+   return response
+ 
 
 
 # LOGIN
