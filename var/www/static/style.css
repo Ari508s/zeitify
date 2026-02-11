@@ -4,7 +4,11 @@
   box-sizing: border-box;
 }
 
-
+body {
+  font-family: Arial, sans-serif;
+  background: #f6f7f8;
+  color: #111827;
+}
 
 .auth-body {
   min-height: 100vh;
